@@ -1,27 +1,24 @@
 <template>
   <div id="app">
     <img src="./assets/logo.png">
-    <HelloWorld/>
-    <counter></counter>
+    <alert ></alert>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld'
-import Counter from './components/Counter.vue'
+import Alert from "./components/Alert.vue";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    HelloWorld,
-    Counter
+    Alert
   }
-}
+};
 </script>
 
 <style>
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
