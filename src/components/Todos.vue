@@ -25,7 +25,15 @@
             <label @dblclick="editTodo(todo)">{{todo.name}}</label>
             <button class="destroy" @click.prevent="deleteTodo(todo)"></button>
           </div>
-          <input type="text" class="edit" v-model="todo.name">
+          <input
+            type="text"
+            class="edit"
+            v-model="todo.name"
+            @keyup.enter="doneEdit"
+            @keyup.esc="cancelEdit"
+            v-focus="todo===editing"
+            @blur="doneEdit"
+          >
         </li>
       </ul>
       <button class="clear-completed" @click.prevent="deleteCompleted" v-show="completed">
@@ -59,6 +67,7 @@
 
 
 <script>
+import Vue from "vue";
 export default {
   data() {
     return {
@@ -70,15 +79,18 @@ export default {
       ],
       newTodo: "",
       filter: "all",
-      editing: null
+      editing: null,
+      oldTodo: ""
     };
   },
   methods: {
     addTodo() {
-      this.todos.push({
-        completed: false,
-        name: this.newTodo
-      });
+      if (this.newTodo !== "") {
+        this.todos.push({
+          completed: false,
+          name: this.newTodo
+        });
+      }
       this.newTodo = "";
     },
     deleteTodo(todo) {
@@ -94,9 +106,14 @@ export default {
     },
     editTodo(todo) {
       this.editing = todo;
+      this.oldTodo = todo.name;
     },
     doneEdit() {
       this.editing = null;
+    },
+    cancelEdit() {
+      this.editing.name = this.oldTodo;
+      this.doneEdit();
     }
   },
   computed: {
@@ -126,9 +143,11 @@ export default {
   },
   directives: {
     focus(el, value) {
-      if (value) {
-        el.focus();
-      }
+      Vue.nextTick().then(function() {
+        if (value) {
+          el.focus();
+        }
+      });
     }
   }
 };
