@@ -30,7 +30,7 @@
             class="edit"
             v-model="todo.name"
             @keyup.enter="doneEdit"
-            @keyup.esc="cancelEdit"
+            @keyup.escape="cancelEdit"
             v-focus="todo===editing"
             @blur="doneEdit"
           >
@@ -69,19 +69,27 @@
 <script>
 import Vue from "vue";
 export default {
+  props: {
+    value: {
+      type: Array,
+      default() {
+        return [];
+      }
+    }
+  },
   data() {
     return {
-      todos: [
-        {
-          name: "tâche de test",
-          completed: false
-        }
-      ],
+      todos: this.value,
       newTodo: "",
       filter: "all",
       editing: null,
       oldTodo: ""
     };
+  },
+  watch: {
+    value(value) {
+      this.todos = value;
+    }
   },
   methods: {
     addTodo() {
@@ -95,12 +103,14 @@ export default {
     },
     deleteTodo(todo) {
       this.todos.splice(this.todos.indexOf(todo), 1);
+      this.$emit("input", this.todos);
     },
     deleteCompleted() {
       this.todos.forEach(todo => {
         if (todo.completed) {
           this.todos.splice(this.todos.indexOf(todo));
         }
+        this.$emit("input", this.todos);
       });
       //this.todos = this.todos.filter(todo =>!todo.completed)
     },
